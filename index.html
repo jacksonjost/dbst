@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Python in Browser with Skulpt</title>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@0.11.0/min/skulpt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@0.11.0/min/skulpt-stdlib.js"></script>
+</head>
+<body>
+
+<h2>Python in Browser with Skulpt</h2>
+
+<textarea id="pythonCode" cols="60" rows="10"></textarea><br>
+<button onclick="runPython()">Run Python</button>
+<pre id="output"></pre>
+
+<script>
+    function runPython() {
+        var prog = document.getElementById("pythonCode").value;
+        var mypre = document.getElementById("output");
+        mypre.innerHTML = ''; // Clear previous output
+        Sk.pre = "output";
+        Sk.configure({ output: output, read: builtinRead });
+        (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+        var myPromise = Sk.misceval.asyncToPromise(function() {
+            return Sk.importMainWithBody("<stdin>", false, prog, true);
+        });
+        myPromise.then(function(mod) {
+            console.log('success');
+        },
+            function(err) {
+            mypre.innerHTML = err.toString();
+        });
+    }
+
+    function builtinRead(x) {
+        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+            throw "File not found: '" + x + "'";
+        return Sk.builtinFiles["files"][x];
+    }
+</script>
+
+</body>
+</html>
