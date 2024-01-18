@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Python in Browser with Skulpt</title>
-    <script src="https://cdn.jsdelivr.net/npm/skulpt@0.11.0/min/skulpt.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/skulpt@0.11.0/min/skulpt-stdlib.js"></script>
+    <!-- Updated Skulpt scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@0.11.0/dist/skulpt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@0.11.0/dist/skulpt-stdlib.min.js"></script>
 </head>
 <body>
 
 <h2>Python in Browser with Skulpt</h2>
 
 <textarea id="pythonCode" cols="60" rows="10"></textarea><br>
-<button onclick="runPython()">Run Python</button>
+<button id="runButton">Run Python</button>
 <pre id="output"></pre>
 
 <script>
+    document.getElementById('runButton').addEventListener('click', runPython);
+
     function runPython() {
         var prog = document.getElementById("pythonCode").value;
         var mypre = document.getElementById("output");
         mypre.innerHTML = ''; // Clear previous output
         Sk.pre = "output";
-        Sk.configure({ output: output, read: builtinRead });
+        Sk.configure({ output: text => mypre.innerHTML += text, read: builtinRead });
         (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
         var myPromise = Sk.misceval.asyncToPromise(function() {
             return Sk.importMainWithBody("<stdin>", false, prog, true);
@@ -28,7 +31,7 @@
         myPromise.then(function(mod) {
             console.log('success');
         },
-            function(err) {
+        function(err) {
             mypre.innerHTML = err.toString();
         });
     }
