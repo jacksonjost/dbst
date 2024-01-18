@@ -183,7 +183,7 @@
         });
     
         
-        editor.setValue("import random\n# Write your bot code here\nprint(f'This is test output message #{random.randint(1, 99999)}!')");
+        editor.setValue("import random\nscale_factor = int(input())\nscaled_number = random.randint(1, 99999) * scale_factor\nprint(f'This is test output message #{scaled_number}!')");
     
         document.getElementById('runButton').addEventListener('click', runPython);
     
