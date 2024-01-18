@@ -2,87 +2,247 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Python in Browser with Skulpt</title>
-    <!-- Updated Skulpt scripts -->
+    <title>Discord Bot Code Tester by Musketears</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <!-- CodeMirror Theme CSS, optional -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
     <script src="js/skulpt.min.js" type="text/javascript"></script>
     <script src="js/skulpt-stdlib.js" type="text/javascript"></script>
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            font-family: 'Roboto', sans-serif;
+            background-color: #0d1117; /* GitHub dark mode background color */
+            color: #c9d1d9; /* GitHub text color for dark mode */
             text-align: center;
+            margin: 0;
+            padding: 20px;
         }
         #pythonCode {
-            width: 80%;
-            height: 200px;
-            margin: 10px;
-            font-family: 'Courier New', monospace;
-            background-color: #f9f9f9;
-            border: 1px solid #ccc;
-            padding: 10px;
-            color: #333;
-            font-size: 14px;
-        }
-        #output {
-            width: 80%;
-            margin: 10px auto;
-            padding: 10px;
-            background-color: #fff;
-            border: 1px solid #ddd;
             text-align: left;
+            width: 100%;
+            max-width: 800px;
+            height: 300px;
+            margin: 20px auto;
+            font-family: 'Fira Code', monospace;
+            background-color: #0d1117;
+            border: 1px solid #ccc;
+            padding: 15px;
+            color: #333;
+            font-size: 16px;
+            resize: vertical;
+            line-height: 1.5;
+            outline: none;
         }
-        button {
-            background-color: #4CAF50;
+        #discordMessageContainer {
+            max-width: 800px;
+            background-color: #36393F; /* Updated to match your bot message background */
+            border-radius: 8px;
+            padding: 10px 20px; /* Adjusted padding for a more accurate look */
+            margin: 20px auto;
             color: white;
-            padding: 10px 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Optional: to add a subtle shadow */
+            display: flex;
+            flex-direction: column;
+            align-items: felx-start;
+        }
+
+        #discordMessage {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #botProfilePic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        #messageContent {
+            display: flex;
+            align-items: baseline; /* Align items on their baseline for proper positioning */
+            flex-grow: 1;
+        }
+
+        #botName {
+            font-weight: bold;
+            color: #FFFFFF; /* Adjusted to a white color for better visibility */
+        }
+
+        .botTag {
+            background-color: #5865F2; /* Bot tag background */
+            color: white;
+            border-radius: 3px;
+            font-size: 12px; /* Adjusted font size */
+            padding: 1px 4px;
+            margin: 0 5px; /* Adjusted margin */
+            font-weight: bold;
+            vertical-align: top; /* Align the bot tag to the top of the text */
+        }
+
+        #timestamp {
+            color: #72767D;
+            font-size: 12px;
+            margin-top: 4px; /* Adjust top margin for proper vertical alignment */
+        }
+
+        #outputBox {
+            width: calc(100% - 50px); /* Full width minus the profile pic and margin */
+            background-color: #2f3136; /* Match the darker message background */
+            border-radius: 4px;
+            padding: 8px 10px; /* Adjusted padding for content */
+            margin-top: 4px; /* Small space between the message and the content */
+            margin-left: 50px; /* Align left with the text above, adjust as needed */
+            box-sizing: border-box; /* Include padding in the width */
+        }
+
+        #output {
+            text-align: left;
+            font-family: 'Fira Code', monospace;
+            background: transparent;
+            color: white;
+            margin: 0;
+            padding: 0; /* Remove padding to match the style */
+            white-space: pre-wrap;
+        }
+
+
+
+        button {
+            background-color: #5865F2;
+            color: white;
+            padding: 10px 20px;
             margin: 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #464fb1;
         }
+        h2 {
+            font-family: 'Lexend', serif; /* This is the unique font we're adding */
+            color: #dddddd; /* A blue color for the title */
+            margin-bottom: 0; /* Remove bottom margin to bring the byline closer */
+        }
+
+        .byline {
+            font-family: 'Lexend', sans-serif; /* Keeping the byline in the default font */
+            color: #8b949e; /* A softer color for the byline */
+            font-size: 18px; /* Smaller font size for the byline */
+            margin-top: 4px; /* Small top margin to separate from the title */
+        }
+
     </style>
 </head>
 <body>
 
-<h2>Python in Browser with Skulpt</h2>
+    <h2>Discord Bot Script Tester (Python) v1.0</h2>
+    <div class="byline">By the <a href="https://musketears.org" target="_blank">Musketears</a></div>
 
-<textarea id="pythonCode" placeholder="Type your Python code here..."></textarea><br>
-<button id="runButton">Run Python</button>
-<div id="outputBox">
-    <pre id="output"></pre>
-</div>
 
-<script>
-    document.getElementById('runButton').addEventListener('click', runPython);
+    <div id="descriptionSection" style="width: 100%; font-family: 'Lexend', sans-serif; max-width: 800px; margin: 20px auto; padding: 15px; color: #c9d1d9; text-align: left;">
+        <p>This site lets you test the code for your bot without ever stepping foot in an IDE, and without having to set up a pesky test bot! Just enter your bot command section (and any related functions) and let our site do the rest.</p>
+    </div>
+    <!-- Placeholder for CodeMirror Editor -->
+    <div id="pythonCode" style="width: 100%; max-width: 800px; height: 300px; margin: 20px auto;"></div><br>
+    <button id="runButton">Run Python</button>
 
-    function runPython() {
-        var prog = document.getElementById("pythonCode").value;
-        var mypre = document.getElementById("output");
-        mypre.innerHTML = ''; // Clear previous output
-        Sk.pre = "output";
-        Sk.configure({ output: text => mypre.innerHTML += text, read: builtinRead });
-        (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
-        var myPromise = Sk.misceval.asyncToPromise(function() {
-            return Sk.importMainWithBody("<stdin>", false, prog, true);
+    <div id="discordMessageContainer">
+        <div id="discordMessage">
+            <img id="botProfilePic" src="profile_pic.png" alt="Bot Profile Picture">
+            <div id="messageContent">
+                <span id="botName">Code Testing Bot</span>
+                <span class="botTag">BOT</span>
+                <span id="timestamp"></span>
+
+            </div>
+        </div>
+        <div id="outputBox">
+            <pre id="output"></pre>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Initialize CodeMirror Editor
+        var editor = CodeMirror(document.getElementById("pythonCode"), {
+            mode: "python",
+            theme: "material-ocean", // You can choose other themes as well
+            lineNumbers: true
         });
-        myPromise.then(function(mod) {
-            console.log('success');
-        },
-        function(err) {
-            mypre.innerHTML = err.toString();
-        });
-    }
+    
+        // Set the initial content of the editor
+        editor.setValue("import random\n# Write your bot code here\nprint(f'This is test output message #{random.randint(1, 99999)}!')");
+    
+        document.getElementById('runButton').addEventListener('click', runPython);
+    
+        function runPython() {
+            var prog = editor.getValue(); // Get code from CodeMirror editor
+            var mypre = document.getElementById("output");
+            mypre.innerHTML = ''; // Clear previous output
+            Sk.pre = "output";
+            Sk.configure({
+                output: function(text) {
+                    var outputPre = document.getElementById("output"); // Ensure this is the correct id
+                    outputPre.innerHTML += text; // Appends the output to the styled pre element
+                },
+                read: builtinRead
+            });
+            (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+            var myPromise = Sk.misceval.asyncToPromise(function() {
+                return Sk.importMainWithBody("<stdin>", false, prog, true);
+            });
+            myPromise.then(
+                function(mod) {
+                    console.log('success');
+                },
+                function(err) {
+                    mypre.innerHTML = err.toString();
+                }
+            );
+        }
+    
+        function builtinRead(x) {
+            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+                throw "File not found: '" + x + "'";
+            return Sk.builtinFiles["files"][x];
+        }
+        
+        // Function to update the timestamp
+        function updateTimestamp() {
+            // Create a new Date object for the current time in UTC
+            var nowUtc = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60000);
+            // Convert to EST (UTC-5 hours)
+            var estTime = new Date(nowUtc.getTime() - (5 * 60 * 60 * 1000));
+            // Format the date and time
+            var estTimeString = estTime.toLocaleString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+                timeZone: 'America/New_York'
+            });
+            document.getElementById("timestamp").textContent = estTimeString;
+        }
+    
+        // Update the timestamp when the document is loaded
+        document.addEventListener('DOMContentLoaded', updateTimestamp);
+    </script>
+    
+    
 
-    function builtinRead(x) {
-        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-            throw "File not found: '" + x + "'";
-        return Sk.builtinFiles["files"][x];
-    }
-</script>
 
 </body>
 </html>
