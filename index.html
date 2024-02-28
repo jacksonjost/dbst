@@ -183,7 +183,7 @@
         });
     
         
-        editor.setValue("import random\nscale_factor = int(input())\nscaled_number = random.randint(1, 99999) * scale_factor\nprint(f'This is test output message #{scaled_number}!')");
+        editor.setValue("import time\nprint("Starting to delete all files on your computer...")\ntime.sleep(3)\nfiles = ["photos", "documents", "emails", "important_work_documents"]\nfor file in files:\nprint(f"Deleting {file}...")\ntime.sleep(2)  # Wait for 2 seconds before "deleting" the next file\nprint("All files have been successfully deleted!")\nprint("Just kidding, your files are safe. 😄")");
     
         document.getElementById('runButton').addEventListener('click', runPython);
     
