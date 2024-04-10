@@ -1,0 +1,1 @@
+In Progress: This site lets you test the code for your Discord bot without ever stepping foot in an IDE, and without having to set up a pesky test bot! Just enter your bot command section (and any related functions) and let our site do the rest.
